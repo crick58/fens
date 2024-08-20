@@ -214,13 +214,13 @@ if __name__ == '__main__':
     start = time.time()
     all_train_logits = {}
 
-    for i in range(len(models)):
+    for i in range(len(q_models)):
         print(f"==> Model {i}")
         train_loader, proxy_loader, val_loader, test_loader, local_test_loader, num_samples = dataset.fetch(i)
         logit_trainset = []
         with torch.no_grad():
             for elems, labels in proxy_loader:
-                outputs = [model(elems).detach().cpu() for model in models]
+                outputs = [model(elems).detach().cpu() for model in q_models]
                 stacked_outputs = torch.hstack(outputs)
                 logit_trainset.append((elems, stacked_outputs, labels))
         flattened_logit_trainset = []
@@ -240,7 +240,7 @@ if __name__ == '__main__':
     logit_testset = []
     with torch.no_grad():
         for elems, labels in test_loader:
-            outputs = [model(elems).detach().cpu() for model in models]
+            outputs = [model(elems).detach().cpu() for model in q_models]
             stacked_outputs = torch.hstack(outputs)
             logit_testset.append((elems, stacked_outputs, labels))
     flattened_logit_testset = []

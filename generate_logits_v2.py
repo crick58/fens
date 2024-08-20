@@ -217,13 +217,13 @@ if __name__ == '__main__':
     start = time.time()
     all_train_logits = {}
 
-    for i in range(len(models)):
+    for i in range(len(q_models)):
         print(f"==> Model {i}")
         train_loader, proxy_loader, val_loader, test_loader, local_test_loader, num_samples = dataset.fetch(i)
         logit_trainset = []
         with torch.no_grad():
             for elems, labels in proxy_loader:
-                outputs = [model(elems).detach().cpu() for model in models]
+                outputs = [model(elems).detach().cpu() for model in q_models]
                 stacked_outputs = torch.hstack(outputs)
                 logit_trainset.append((stacked_outputs, labels))
         flattened_logit_trainset = []
@@ -244,7 +244,7 @@ if __name__ == '__main__':
     logit_testset = []
     with torch.no_grad():
         for elems, labels in test_loader:
-            outputs = [model(elems).detach().cpu() for model in models]
+            outputs = [model(elems).detach().cpu() for model in q_models]
             stacked_outputs = torch.hstack(outputs)
             logit_testset.append((stacked_outputs, labels))
     flattened_logit_testset = []
@@ -266,7 +266,7 @@ if __name__ == '__main__':
         logit_valset = []
         with torch.no_grad():
             for elems, labels in val_loader:
-                outputs = [model(elems).detach().cpu() for model in models]
+                outputs = [model(elems).detach().cpu() for model in q_models]
                 stacked_outputs = torch.hstack(outputs)
                 logit_valset.append((stacked_outputs, labels))
         flattened_logit_valset = []
@@ -285,13 +285,13 @@ if __name__ == '__main__':
         start = time.time()
         all_local_test_logits = {}
 
-        for i in range(len(models)):
+        for i in range(len(q_models)):
             print(f"==> Model {i}")
             train_loader, proxy_loader, val_loader, test_loader, local_test_loader, num_samples = dataset.fetch(i)
             logit_local_testset = []
             with torch.no_grad():
                 for elems, labels in local_test_loader:
-                    outputs = [model(elems).detach().cpu() for model in models]
+                    outputs = [model(elems).detach().cpu() for model in q_models]
                     stacked_outputs = torch.hstack(outputs)
                     logit_local_testset.append((stacked_outputs, labels))
             flattened_logit_local_testset = []
